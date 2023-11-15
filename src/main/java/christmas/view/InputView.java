@@ -48,6 +48,7 @@ public class InputView {
         List<MenuOrder> menuOrders = new ArrayList<>();
 
         Set<String> uniqueMenuNames = new HashSet<>();
+        boolean hasDrink = false;
 
         while (true) {
             for (String orderToken : orderTokens) {
@@ -97,6 +98,11 @@ public class InputView {
                 Menu menu = new Menu(menuName, menuPrice, eventType);
                 MenuOrder menuOrder = new MenuOrder(menu, quantity);
                 menuOrders.add(menuOrder);
+            }
+            if (hasDrink && menuOrders.size() == 1) {
+                errorHandler.handleException("[ERROR] 음료만 주문할 수 없습니다. 다시 입력해 주세요.");
+                menuOrders.clear();
+                break;
             }
             break;
         }
