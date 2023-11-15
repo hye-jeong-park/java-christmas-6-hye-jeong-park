@@ -5,6 +5,7 @@ import static christmas.model.EventType.WEEKEND;
 
 import christmas.model.*;
 
+import christmas.utils.OrderCalculator;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -37,6 +38,11 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
         // 특별 할인
         if (isSpecialDiscountDate(visitDate)) {
             discounts.add(calculateSpecialDiscount());
+        }
+
+        // 증정 이벤트 할인
+        if (OrderCalculator.calculateTotalOrderAmount(order) >= MINIMUM_ORDER_AMOUNT_FOR_GIFT) {
+            discounts.add(calculateGiftDiscount());
         }
 
         return discounts;
@@ -106,6 +112,22 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
         int discountAmount = 1000;
         String eventTypeString = EventType.SPECIAL.getDisplayName();
         return new Discount(eventTypeString, discountAmount);
+    }
+
+    // 증정 이벤트 할인 계산
+    private Discount calculateGiftDiscount() {
+        String eventTypeString = EventType.GIFT.getDisplayName();
+        return new Discount(eventTypeString, MenuPrice.DRINK_CHAMPAGNE.getPrice());
+    }
+
+    // 증정 이벤트 메뉴 계산
+    private Menu calculateGiftMenu(List<MenuOrder> menuOrders) {
+        if (calculateTotalOrderAmount(menuOrders) < MINIMUM_ORDER_AMOUNT_FOR_GIFT) {
+            return null;
+        }
+
+        Menu giftMenu = new Menu("샴페인", MenuPrice.DRINK_CHAMPAGNE, EventType.DRINK);
+        return giftMenu;
     }
 
     // 총 주문 금액 계산
