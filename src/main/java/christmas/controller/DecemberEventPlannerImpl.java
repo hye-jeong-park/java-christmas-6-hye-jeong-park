@@ -1,8 +1,12 @@
 package christmas.controller;
 
+import static christmas.model.EventType.WEEKDAY;
+import static christmas.model.EventType.WEEKEND;
+
 import christmas.model.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class DecemberEventPlannerImpl implements DecemberEventPlanner {
@@ -23,12 +27,55 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
             discounts.add(calculateChristmasDiscount(visitDate));
         }
 
+        // 주중 및 주말 할인
+        if (isWeekday(visitDate)) {
+            discounts.addAll(calculateWeekdayDiscount(order));
+        } else {
+            discounts.addAll(calculateWeekendDiscount(order));
+        }
+
         return discounts;
     }
 
     // 크리스마스 할인 기간 확인
     private boolean isChristmasDiscountPeriod(int visitDate) {
         return visitDate >= 1 && visitDate <= 25;
+    }
+
+    // 주중 여부 확인
+    private boolean isWeekday(int visitDate) {
+        // 일요일이 1인 가정하에 요일 계산 (Calendar.SUNDAY = 1)
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2023, Calendar.DECEMBER, visitDate);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+        return dayOfWeek >= Calendar.SUNDAY && dayOfWeek <= Calendar.THURSDAY;
+    }
+
+    //주중 할인 계산
+    private List<Discount> calculateWeekdayDiscount(Order order) {
+        List<Discount> discounts = new ArrayList<>();
+        for (MenuOrder menuOrder : order.getMenuOrders()) {
+            if (menuOrder.getMenu().getEventType() == EventType.DESSERT) {
+                int discountAmount = 2023 * menuOrder.getQuantity();
+                String eventTypeString = WEEKDAY.getDisplayName();
+                discounts.add(new Discount(eventTypeString, discountAmount));
+            }
+        }
+        return discounts;
+    }
+
+    // 주말 할인 계산
+    private List<Discount> calculateWeekendDiscount(Order order) {
+        List<Discount> discounts = new ArrayList<>();
+        for (MenuOrder menuOrder : order.getMenuOrders()) {
+            if (menuOrder.getMenu().getEventType() == EventType.MAIN) {
+                int discountAmount = 2023 * menuOrder.getQuantity();
+                String eventTypeString = WEEKEND.getDisplayName();
+                discounts.add(new Discount(eventTypeString, discountAmount));
+            }
+        }
+        return discounts;
     }
 
     // 크리스마스 할인 계산
