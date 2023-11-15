@@ -40,4 +40,13 @@ public class OutputView {
             }
         }
     }
+
+    public void printTotalBenefitAmount(int totalBenefitAmount) {
+        System.out.println("\n<총혜택 금액>");
+        if (totalBenefitAmount == 0) {
+            System.out.printf("0원\n");
+        } else {
+            System.out.printf("-%,d원%n", totalBenefitAmount);
+        }
+    }
 }
