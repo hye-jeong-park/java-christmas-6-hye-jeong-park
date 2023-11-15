@@ -2,6 +2,7 @@ package christmas.controller;
 
 import static christmas.model.EventType.WEEKDAY;
 import static christmas.model.EventType.WEEKEND;
+import static christmas.utils.OrderCalculator.calculateTotalDiscountAmount;
 
 import christmas.model.*;
 
@@ -17,6 +18,9 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
     @Override
     public EventResult calculateEventResult(Order order, int visitDate) {
         List<Discount> discounts = calculateDiscounts(order, visitDate);
+        Menu giftMenu = calculateGiftMenu(order.getMenuOrders());
+        BadgeType badge = calculateBadge(calculateTotalDiscountAmount(discounts));
+
         return null;
     }
 
@@ -128,6 +132,18 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
 
         Menu giftMenu = new Menu("샴페인", MenuPrice.DRINK_CHAMPAGNE, EventType.DRINK);
         return giftMenu;
+    }
+
+    // 배지 계산
+    private BadgeType calculateBadge(int totalBenefitAmount) {
+        if (totalBenefitAmount >= 20000) {
+            return BadgeType.SANTA;
+        } else if (totalBenefitAmount >= 10000) {
+            return BadgeType.TREE;
+        } else if (totalBenefitAmount >= 5000) {
+            return BadgeType.STAR;
+        }
+        return BadgeType.NONE;
     }
 
     // 총 주문 금액 계산
