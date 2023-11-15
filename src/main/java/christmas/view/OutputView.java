@@ -49,4 +49,9 @@ public class OutputView {
             System.out.printf("-%,d원%n", totalBenefitAmount);
         }
     }
+
+    public void printExpectedPaymentAmount(int expectedPaymentAmount) {
+        System.out.println("\n<할인 후 예상 결제 금액>");
+        System.out.printf("%,d원%n", expectedPaymentAmount);
+    }
 }
