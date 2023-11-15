@@ -52,6 +52,21 @@ public class InputView {
                 String menuName = orderInfo[0];
                 int quantity;
 
+                try {
+                    quantity = Integer.parseInt(orderInfo[1]);
+                } catch (NumberFormatException e) {
+                    menuOrders.clear();
+                    errorHandler.handleException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
+                    break;
+                }
+
+                // 개수입력을 올바르게 했는지 확인
+                if (quantity < 1) {
+                    menuOrders.clear();
+                    errorHandler.handleException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
+                    break;
+                }
+
                 // 메뉴판에 있는 메뉴인지 확인
                 MenuPrice menuPrice = MenuPrice.getPriceByName(menuName, errorHandler);
                 if (menuPrice == null) {
