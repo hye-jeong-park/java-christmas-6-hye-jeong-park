@@ -5,11 +5,11 @@ import static christmas.model.EventType.WEEKEND;
 import static christmas.utils.OrderCalculator.calculateTotalDiscountAmount;
 
 import christmas.model.*;
-
 import christmas.utils.OrderCalculator;
+
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+import java.util.Calendar;
 
 public class DecemberEventPlannerImpl implements DecemberEventPlanner {
 
@@ -21,7 +21,10 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
         Menu giftMenu = calculateGiftMenu(order.getMenuOrders());
         BadgeType badge = calculateBadge(calculateTotalDiscountAmount(discounts));
 
-        return null;
+        int totalDiscountAmountExcludingGift = calculateTotalDiscountAmountExcludingGift(discounts,
+            giftMenu);
+
+        return new EventResult(discounts, giftMenu, badge, totalDiscountAmountExcludingGift);
     }
 
     private List<Discount> calculateDiscounts(Order order, int visitDate) {
@@ -55,17 +58,6 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
     // 크리스마스 할인 기간 확인
     private boolean isChristmasDiscountPeriod(int visitDate) {
         return visitDate >= 1 && visitDate <= 25;
-    }
-
-    // 특별 할인 일자 확인
-    private boolean isSpecialDiscountDate(int visitDate) {
-        int[] specialDiscountDates = {3, 10, 17, 24, 25, 31};
-        for (int date : specialDiscountDates) {
-            if (visitDate == date) {
-                return true;
-            }
-        }
-        return false;
     }
 
     // 주중 여부 확인
@@ -102,6 +94,18 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
             }
         }
         return discounts;
+    }
+
+
+    // 특별 할인 일자 확인
+    private boolean isSpecialDiscountDate(int visitDate) {
+        int[] specialDiscountDates = {3, 10, 17, 24, 25, 31};
+        for (int date : specialDiscountDates) {
+            if (visitDate == date) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // 크리스마스 할인 계산
@@ -152,5 +156,15 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
             .mapToInt(
                 menuOrder -> menuOrder.getMenu().getPrice().getPrice() * menuOrder.getQuantity())
             .sum();
+    }
+
+    private int calculateTotalDiscountAmountExcludingGift(List<Discount> discounts, Menu giftMenu) {
+        int totalDiscountAmount = calculateTotalDiscountAmount(discounts);
+
+        if (giftMenu != null) {
+            totalDiscountAmount -= giftMenu.getPrice().getPrice();
+        }
+
+        return totalDiscountAmount;
     }
 }
