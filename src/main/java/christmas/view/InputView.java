@@ -4,13 +4,10 @@ import camp.nextstep.edu.missionutils.Console;
 import christmas.errors.ErrorHandler;
 import christmas.model.EventType;
 import christmas.model.Menu;
-import christmas.model.MenuCategory;
 import christmas.model.MenuOrder;
 import christmas.model.MenuPrice;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class InputView {
 
@@ -48,6 +45,28 @@ public class InputView {
         String[] orderTokens = orderInput.split(",");
         List<MenuOrder> menuOrders = new ArrayList<>();
 
+        while (true) {
+            for (String orderToken : orderTokens) {
+                String[] orderInfo = orderToken.trim().split("-");
+
+                String menuName = orderInfo[0];
+                int quantity;
+
+                // 메뉴판에 있는 메뉴인지 확인
+                MenuPrice menuPrice = MenuPrice.getPriceByName(menuName, errorHandler);
+                if (menuPrice == null) {
+                    errorHandler.handleException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
+                    menuOrders.clear();
+                    break;
+                }
+
+                EventType eventType = EventType.getEventTypeByCategory(menuPrice.getCategory());
+                Menu menu = new Menu(menuName, menuPrice, eventType);
+                MenuOrder menuOrder = new MenuOrder(menu, quantity);
+                menuOrders.add(menuOrder);
+            }
+            break;
+        }
         return menuOrders;
     }
 }
