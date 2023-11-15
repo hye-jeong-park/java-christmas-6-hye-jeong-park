@@ -7,7 +7,9 @@ import christmas.model.Menu;
 import christmas.model.MenuOrder;
 import christmas.model.MenuPrice;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class InputView {
 
@@ -45,6 +47,8 @@ public class InputView {
         String[] orderTokens = orderInput.split(",");
         List<MenuOrder> menuOrders = new ArrayList<>();
 
+        Set<String> uniqueMenuNames = new HashSet<>();
+
         while (true) {
             for (String orderToken : orderTokens) {
                 String[] orderInfo = orderToken.trim().split("-");
@@ -69,6 +73,13 @@ public class InputView {
 
                 // 개수입력을 올바르게 했는지 확인
                 if (quantity < 1) {
+                    menuOrders.clear();
+                    errorHandler.handleException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
+                    break;
+                }
+
+                // 주문 메뉴가 중복되지 않았는지 확인
+                if (!uniqueMenuNames.add(menuName)) {
                     menuOrders.clear();
                     errorHandler.handleException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
                     break;
