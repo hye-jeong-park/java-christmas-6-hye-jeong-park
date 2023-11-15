@@ -25,7 +25,19 @@ public class OutputView {
         System.out.println("\n<증정 메뉴>");
         if (giftMenu != null) {
             System.out.printf("%s 1개%n", giftMenu.getName());
-        } else
+        } else {
             System.out.println("없음");
+        }
+    }
+
+    public void printDiscounts(List<Discount> discounts) {
+        System.out.println("\n<혜택 내역>");
+        if (discounts.isEmpty()) {
+            System.out.println("없음");
+        } else {
+            for (Discount discount : discounts) {
+                System.out.printf("%s 할인: -%,d원%n", discount.getType(), discount.getAmount());
+            }
+        }
     }
 }
