@@ -107,4 +107,12 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
         String eventTypeString = EventType.SPECIAL.getDisplayName();
         return new Discount(eventTypeString, discountAmount);
     }
+
+    // 총 주문 금액 계산
+    private int calculateTotalOrderAmount(List<MenuOrder> menuOrders) {
+        return menuOrders.stream()
+            .mapToInt(
+                menuOrder -> menuOrder.getMenu().getPrice().getPrice() * menuOrder.getQuantity())
+            .sum();
+    }
 }
