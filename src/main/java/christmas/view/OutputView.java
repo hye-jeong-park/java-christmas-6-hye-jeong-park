@@ -20,4 +20,12 @@ public class OutputView {
         System.out.println("\n<할인 전 총주문 금액>");
         System.out.printf("%,d원%n", totalOrderAmount);
     }
+
+    public void printGiftMenu(Menu giftMenu) {
+        System.out.println("\n<증정 메뉴>");
+        if (giftMenu != null) {
+            System.out.printf("%s 1개%n", giftMenu.getName());
+        } else
+            System.out.println("없음");
+    }
 }
