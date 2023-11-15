@@ -34,12 +34,28 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
             discounts.addAll(calculateWeekendDiscount(order));
         }
 
+        // 특별 할인
+        if (isSpecialDiscountDate(visitDate)) {
+            discounts.add(calculateSpecialDiscount());
+        }
+
         return discounts;
     }
 
     // 크리스마스 할인 기간 확인
     private boolean isChristmasDiscountPeriod(int visitDate) {
         return visitDate >= 1 && visitDate <= 25;
+    }
+
+    // 특별 할인 일자 확인
+    private boolean isSpecialDiscountDate(int visitDate) {
+        int[] specialDiscountDates = {3, 10, 17, 24, 25, 31};
+        for (int date : specialDiscountDates) {
+            if (visitDate == date) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // 주중 여부 확인
@@ -82,6 +98,13 @@ public class DecemberEventPlannerImpl implements DecemberEventPlanner {
     private Discount calculateChristmasDiscount(int visitDate) {
         int discountAmount = 1000 + (visitDate - 1) * 100;
         String eventTypeString = EventType.CHRISTMAS.getDisplayName();
+        return new Discount(eventTypeString, discountAmount);
+    }
+
+    // 특별 할인 계산
+    private Discount calculateSpecialDiscount() {
+        int discountAmount = 1000;
+        String eventTypeString = EventType.SPECIAL.getDisplayName();
         return new Discount(eventTypeString, discountAmount);
     }
 }
