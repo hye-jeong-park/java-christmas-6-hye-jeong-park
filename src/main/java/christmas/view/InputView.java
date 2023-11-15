@@ -49,6 +49,13 @@ public class InputView {
             for (String orderToken : orderTokens) {
                 String[] orderInfo = orderToken.trim().split("-");
 
+                // 입력 포맷이 맞는지 확인
+                if (orderInfo.length != 2) {
+                    menuOrders.clear();
+                    errorHandler.handleException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
+                    break;
+                }
+
                 String menuName = orderInfo[0];
                 int quantity;
 
